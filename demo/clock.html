@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+  <title>Clock</title>
+</head>
+<body>
+  <script>
+  var worker = new Worker('./src/clock.js');
+  worker.addEventListener('message', function (e) {
+    var method;
+    if (e.data.method === 'console') {
+      method = e.data.params.shift();
+      console[method].apply(console, e.data.params);
+    } else {
+      console.dir(e.data);
+    }
+  });
+  </script>
+</body>
+</html>
