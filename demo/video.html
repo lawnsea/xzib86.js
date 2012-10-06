@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+  <title>Video</title>
+  <style>
+    #screen {
+      margin-left: 160px;
+      margin-top: 120px;
+      -webkit-transform: scale(2);
+      -moz-transform: scale(2);
+      transform: scale(2);
+    }
+  </style>
+</head>
+<body>
+  <p id='fps'></p>
+  <p id='frames'></p>
+  <p id='elapsed'></p>
+  <canvas id='screen' width=320 height=240></canvas>
+  <script>
+  var worker = new Worker('./src/video.js');
+  var canvas = document.getElementById('screen');
+  var ctx = canvas.getContext('2d');
+  var buffer = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  var fps = document.getElementById('fps');
+  var framesEl = document.getElementById('frames');
+  var elapsedEl = document.getElementById('elapsed');
+  var start = Date.now();
+  var frames = 0;
+
+  worker.addEventListener('message', function (e) {
+    var method;
+    var elapsed;
+
+    if (e.data.method === 'console') {
+      method = e.data.params.shift();
+      console[method].apply(console, e.data.params);
+    } else if (e.data.method === 'blit') {
+      buffer.data.set(new Uint8ClampedArray(e.data.params[0]));
+      ctx.putImageData(buffer, 0, 0);
+      frames++;
+      framesEl.innerHTML = frames;
+      elapsedEl.innerHTML = elapsed = Date.now() - start;
+      fps.innerHTML = 1000 * frames / elapsed;
+    } else {
+      console.dir(e.data);
+    }
+  });
+  </script>
+</body>
+</html>
