@@ -7,7 +7,7 @@ console.log('HEYO');
 var memory = new ArrayBuffer(32 * 1024 * 1024);
 var VIDEO_BASE = 0xA000;
 var VIDEO_WIDTH = 320;
-var VIDEO_HEIGHT = 240;
+var VIDEO_HEIGHT = 200;
 var VIDEO_LEN = VIDEO_WIDTH * VIDEO_HEIGHT;
 var videoMemory = new Uint32Array(memory, VIDEO_BASE, VIDEO_LEN);
 
